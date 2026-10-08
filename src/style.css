@@ -1,0 +1,246 @@
+@import '@fontsource-variable/big-shoulders/opsz.css';
+@import '@fontsource-variable/newsreader/opsz.css';
+@import '@fontsource-variable/newsreader/opsz-italic.css';
+
+:root {
+  --night: #080e18;
+  --ink: #101c28;
+  --ivory: #f0e8d8;
+  --muted: #b5b2aa;
+  --copper: #c68c52;
+  --amber: #efb872;
+  --line: #f0e8d829;
+  --danger: #f07f69;
+  --title: 'Big Shoulders Variable', 'Arial Narrow', sans-serif;
+  --body: 'Newsreader Variable', Georgia, serif;
+  color-scheme: dark;
+  font-family: var(--body);
+  font-optical-sizing: auto;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+}
+* { box-sizing: border-box; }
+html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+html, body { background: var(--night); color: var(--ivory); }
+body { overscroll-behavior: none; }
+#scene { display: block; position: fixed; inset: 0; width: 100%; height: 100%; touch-action: none; outline: none; }
+#game-ui { position: fixed; inset: 0; z-index: 2; pointer-events: none; font-size: 16px; line-height: 1.35; }
+[hidden] { display: none !important; }
+button, input { font: inherit; color: inherit; }
+button { min-height: 44px; border: 0; cursor: pointer; touch-action: manipulation; }
+button:disabled { opacity: .45; cursor: default; }
+button:focus-visible, input:focus-visible, .eva-stick:focus-visible {
+  outline: 2px solid var(--amber); outline-offset: 4px;
+}
+button svg { width: 20px; height: 20px; flex: 0 0 20px; }
+.eva-button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+  min-height: 52px; padding: 12px 24px; color: #0c121a; background: var(--copper);
+  font-family: var(--title); font-size: 24px; font-weight: 720; line-height: 1;
+  border: 1px solid transparent; border-radius: 2px;
+}
+.eva-button:hover:not(:disabled) { background: var(--amber); }
+.eva-button.secondary { color: var(--ivory); background: transparent; border-color: var(--line); }
+.eva-button.secondary:hover:not(:disabled) { border-color: var(--copper); background: #c68c5212; }
+.eva-icon-button {
+  display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px;
+  background: #080e18cc; border: 1px solid var(--line); border-radius: 2px;
+}
+.eva-icon-button:hover { border-color: var(--amber); }
+.eva-key { display: inline-flex; min-width: 23px; height: 23px; align-items: center; justify-content: center; padding: 1px 5px; border: 1px solid #f0e8d84a; border-radius: 2px; font-family: var(--title); font-size: 15px; font-weight: 650; }
+
+/* Le monde reste derrière le titre. Le panneau n'emprunte que la lumière du quai. */
+.eva-intro { isolation: isolate; position: absolute; inset: 0; pointer-events: auto; overflow: hidden; background: linear-gradient(90deg, #080e18f2 0%, #080e18be 38%, #080e1830 75%); }
+.eva-intro::before { content: ''; position: absolute; inset: 0; z-index: -1; background: url('/assets/station-poster.webp') center / cover; opacity: .18; }
+.eva-intro-content { position: absolute; left: clamp(24px, 6vw, 100px); top: 50%; transform: translateY(-50%); width: min(560px, 64vw); padding: 40px 0; }
+.eva-intro h1 { margin: 0; font-family: var(--title); font-size: clamp(90px, 11vw, 175px); font-weight: 780; line-height: .82; letter-spacing: -.035em; text-transform: uppercase; }
+.eva-intro h1 span { display: block; width: fit-content; margin-top: 12px; color: var(--copper); font-size: .64em; letter-spacing: .1em; }
+.eva-intro-pitch { max-width: 31ch; margin: 30px 0 24px; color: var(--ivory); font-size: clamp(19px, 1.9vw, 24px); line-height: 1.35; }
+.eva-intro-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.eva-intro-actions .eva-button { min-width: 166px; }
+.eva-loading { width: min(310px, 100%); margin: 23px 0 0; }
+.eva-loading-track { height: 2px; background: #f0e8d825; overflow: hidden; }
+.eva-loading-fill { display: block; height: 100%; width: 0; background: var(--copper); transition: width .2s ease; }
+.eva-loading-label { display: flex; justify-content: space-between; gap: 12px; margin: 8px 0 0; color: var(--muted); font-size: 14px; }
+.eva-loading-label span:first-child { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.eva-intro-bottom { position: absolute; left: clamp(24px, 6vw, 100px); right: clamp(24px, 4vw, 64px); bottom: max(24px, env(safe-area-inset-bottom)); display: flex; align-items: end; justify-content: space-between; gap: 24px; }
+.eva-caption { margin: 0; color: var(--muted); font-size: 14px; font-style: italic; }
+.eva-intro-controls { color: var(--muted); font-size: 14px; text-align: right; }
+.eva-intro-controls p { margin: 5px 0 0; }
+.eva-sound { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; cursor: pointer; font-size: 16px; color: var(--ivory); }
+.eva-sound input { width: 18px; height: 18px; margin: 0; accent-color: var(--copper); }
+.eva-intro-sound { margin-top: 16px; }
+
+/* Instruments : réserves à gauche, outils à droite, vue libre au centre. */
+.eva-hud { position: absolute; inset: 0; padding: max(20px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left)); pointer-events: none; }
+.eva-hud-top { display: flex; align-items: start; justify-content: space-between; gap: 20px; }
+.eva-location { display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px; text-shadow: 0 1px 8px #080e18; }
+.eva-mode { font-family: var(--title); font-weight: 720; font-size: 23px; line-height: 1; }
+.eva-zone { font-size: 15px; color: #e0dbce; }
+.eva-reserves { display: flex; flex-wrap: wrap; gap: 14px; padding: 10px 13px; background: #080e18bf; border: 1px solid #f0e8d81c; }
+.eva-gauge { --gauge-color: var(--ivory); width: 86px; }
+.eva-gauge[data-resource='oxygen'] { --gauge-color: #aad1dc; }
+.eva-gauge[data-resource='energy'] { --gauge-color: var(--amber); }
+.eva-gauge[data-resource='food'] { --gauge-color: #c7cca3; }
+.eva-gauge.low { --gauge-color: var(--danger); }
+.eva-gauge-top { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; font-family: var(--title); font-size: 16px; font-weight: 580; line-height: 1; }
+.eva-gauge-value { color: var(--gauge-color); font-variant-numeric: tabular-nums; }
+.eva-gauge-track { width: 100%; height: 3px; margin-top: 8px; background: #f0e8d820; }
+.eva-gauge-fill { display: block; width: 100%; height: 100%; background: var(--gauge-color); transition: width .3s linear; }
+.eva-navigation { display: flex; flex-direction: column; gap: 3px; margin-top: 10px; color: var(--muted); text-align: right; font-size: 14px; text-shadow: 0 2px 5px #080e18; }
+.eva-hud-tools { display: flex; align-items: center; gap: 8px; pointer-events: auto; }
+.eva-stock-strip { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 10px; padding-left: 13px; color: var(--muted); font-size: 13px; text-shadow: 0 1px 6px #080e18; }
+.eva-stock-strip b { margin-left: 4px; color: var(--ivory); font-family: var(--title); font-size: 17px; font-weight: 620; font-variant-numeric: tabular-nums; }
+.eva-reticle { position: absolute; top: 50%; left: 50%; width: 7px; height: 7px; border: 1px solid #f0e8d899; border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 0 2px #080e1840; }
+.eva-focus { position: absolute; left: 50%; top: calc(50% + 24px); transform: translateX(-50%); max-width: min(340px, 85vw); text-align: center; color: var(--ivory); text-shadow: 0 2px 5px #080e18; font-size: 16px; }
+.eva-focus span { display: block; margin-top: 3px; color: var(--muted); font-size: 14px; }
+.eva-waypoints { position: fixed; inset: 0; z-index: 3; pointer-events: none; }
+.eva-focus { display: none; }
+.eva-waypoint { position: absolute; transform: translate(-50%, -50%); padding: 5px 8px; border-left: 1px solid #c38b4b; background: #080e18b8; color: #f0e8d8; font: 12px 'Big Shoulders Variable', sans-serif; letter-spacing: .06em; white-space: nowrap; }
+.eva-waypoint[data-label="CARGO"] { border-color: #83b6c2; color: #acd3db; }
+.eva-bottom { position: absolute; left: max(24px, env(safe-area-inset-left)); right: max(24px, env(safe-area-inset-right)); bottom: max(24px, env(safe-area-inset-bottom)); display: flex; align-items: end; justify-content: space-between; gap: 16px; }
+.eva-objectives { max-width: 290px; margin: 0; padding: 0; list-style: none; }
+.eva-objectives li { display: flex; align-items: baseline; gap: 9px; margin: 7px 0; color: #e0dbce; font-size: 15px; text-shadow: 0 2px 6px #080e18; }
+.eva-objectives li::before { content: ''; flex: 0 0 5px; width: 5px; height: 5px; background: var(--copper); }
+.eva-objectives li.done { color: #b5b2aa; text-decoration: line-through; }
+.eva-objectives li.done::before { background: #a4b495; }
+.eva-flight { color: var(--muted); text-align: right; font-size: 14px; text-shadow: 0 2px 6px #080e18; }
+.eva-flight b { font-family: var(--title); font-size: 22px; font-weight: 580; color: var(--ivory); font-variant-numeric: tabular-nums; }
+.eva-flight p { margin: 0; }
+.eva-interact { position: absolute; bottom: max(28px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 12px; min-height: 48px; max-width: min(300px, 65vw); padding: 10px 17px; color: var(--ivory); border: 1px solid #c68c5299; background: #080e18e8; font-family: var(--title); font-size: 20px; font-weight: 600; pointer-events: auto; }
+.eva-interact:hover { border-color: var(--amber); }
+.eva-toast { position: absolute; top: 132px; left: 50%; transform: translateX(-50%); max-width: min(540px, 88vw); padding: 11px 18px; border-bottom: 1px solid var(--copper); background: #080e18e8; color: var(--ivory); text-align: center; font-size: 17px; }
+
+/* Pause et carnet : un seul panneau, jamais de grille de cartes. */
+.eva-menu { position: absolute; inset: 0; display: grid; place-items: center; padding: 20px; pointer-events: auto; background: #080e18bd; }
+.eva-menu-sheet { position: relative; width: min(640px, 100%); max-height: calc(100dvh - 40px); overflow-y: auto; overscroll-behavior: contain; background: #0d1723f5; border: 1px solid #c68c5273; padding: clamp(24px, 4vw, 42px); }
+.eva-menu-close { position: absolute; top: 14px; right: 14px; }
+.eva-menu h2 { margin: 0 44px 25px 0; font-family: var(--title); font-size: clamp(38px, 6vw, 60px); font-weight: 720; line-height: 1; }
+.eva-menu h3 { margin: 30px 0 8px; font-family: var(--title); font-size: 27px; font-weight: 650; }
+.eva-menu p { color: var(--muted); }
+.eva-menu-actions { display: flex; flex-direction: column; align-items: stretch; gap: 10px; }
+.eva-menu-actions .eva-button { min-height: 48px; font-size: 22px; }
+.eva-menu-rule { height: 1px; margin: 24px 0 16px; background: var(--line); }
+.eva-quiet-button { min-height: 44px; padding: 6px 0; background: transparent; color: var(--muted); text-decoration: underline; text-underline-offset: 4px; }
+.eva-quiet-button:hover { color: var(--ivory); }
+.eva-confirm { padding: 16px 0 0; border-top: 1px solid var(--line); }
+.eva-confirm p { margin: 0 0 14px; color: var(--ivory); }
+.eva-confirm-actions { display: flex; gap: 8px; }
+.eva-confirm-actions .eva-button { min-height: 44px; padding: 8px 14px; font-size: 20px; }
+.eva-help-list { margin: 0; }
+.eva-help-list > div { display: grid; grid-template-columns: minmax(90px, 1fr) 1.5fr; gap: 20px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.eva-help-list dt { color: var(--ivory); }
+.eva-help-list dd { margin: 0; color: var(--muted); }
+.eva-inventory-list { margin: 0; }
+.eva-inventory-list > div { display: flex; justify-content: space-between; align-items: baseline; padding: 11px 0; border-bottom: 1px solid var(--line); }
+.eva-inventory-list dt { font-size: 20px; color: var(--muted); }
+.eva-inventory-list dd { margin: 0; font-family: var(--title); font-size: 28px; font-weight: 640; font-variant-numeric: tabular-nums; }
+.eva-eat-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 16px; }
+.eva-eat-row p { font-size: 15px; margin: 0; max-width: 25ch; }
+.eva-eat-row .eva-button { min-height: 44px; font-size: 20px; padding: 10px 16px; }
+.eva-base-line { display: flex; align-items: baseline; gap: 8px; color: var(--copper) !important; font-family: var(--title); font-size: 20px; }
+.eva-base-energy { margin-left: auto; color: var(--muted); font-size: 16px; }
+.eva-base-description { margin: -5px 0 10px; font-size: 16px; }
+.eva-base-name { margin-top: 0 !important; color: var(--ivory) !important; font-size: 23px; }
+.eva-base-cost { display: flex; flex-wrap: wrap; gap: 16px; margin: 12px 0; color: var(--muted); }
+.eva-base-cost b { color: var(--ivory); font-weight: 500; }
+.eva-base-hint { margin: 12px 0 20px; font-size: 15px; }
+.eva-build-button { width: 100%; }
+.eva-return-button { width: 100%; margin-top: 10px; }
+
+/* Les commandes tactiles restent hors du chemin des boutons et du titre. */
+.eva-touch { display: none; }
+.eva-look-pad { display: none; }
+.eva-stick { position: absolute; left: max(24px, env(safe-area-inset-left)); bottom: max(24px, env(safe-area-inset-bottom)); width: 110px; height: 110px; border-radius: 50%; border: 1px solid #f0e8d833; background: #080e1866; pointer-events: auto; touch-action: none; }
+.eva-stick::before, .eva-stick::after { content: ''; position: absolute; left: 50%; top: 50%; background: #f0e8d81f; transform: translate(-50%, -50%); }
+.eva-stick::before { width: 60px; height: 1px; }
+.eva-stick::after { width: 1px; height: 60px; }
+.eva-stick-knob { position: absolute; left: 50%; top: 50%; width: 38px; height: 38px; margin: -19px; background: #c68c527d; border: 1px solid var(--copper); border-radius: 50%; transform: translate(var(--jx, 0px), var(--jy, 0px)); }
+.eva-touch-label { position: absolute; bottom: 120px; width: 110px; color: #d9d0bc99; text-align: center; font-size: 12px; }
+.eva-touch-buttons { position: absolute; right: max(20px, env(safe-area-inset-right)); bottom: max(24px, env(safe-area-inset-bottom)); display: grid; grid-template-columns: 48px 48px; gap: 8px; pointer-events: auto; }
+.eva-touch-button { display: flex; align-items: center; justify-content: center; gap: 5px; min-width: 48px; min-height: 48px; background: #080e18bb; border: 1px solid #f0e8d840; border-radius: 2px; font-family: var(--title); font-size: 17px; font-weight: 580; touch-action: none; }
+.eva-touch-button svg { width: 19px; height: 19px; flex-basis: 19px; }
+.eva-touch-button[aria-pressed='true'] { background: #c68c5266; border-color: var(--copper); }
+.eva-touch-boost { grid-column: 1 / -1; }
+.eva-touch-look-caption { position: absolute; bottom: max(158px, calc(env(safe-area-inset-bottom) + 138px)); right: max(23px, env(safe-area-inset-right)); width: 103px; font-size: 12px; text-align: center; color: #d9d0bc99; }
+.no-script { position: fixed; inset: 20px; padding: 24px; background: var(--ink); }
+
+@media (pointer: coarse) {
+  .eva-look-pad { display: block; position: absolute; inset: 22% 0 15% 40%; pointer-events: auto; touch-action: none; }
+  .eva-touch { display: block; position: absolute; inset: 0; pointer-events: none; }
+  .eva-desktop-help { display: none; }
+  .eva-interact { bottom: max(180px, calc(env(safe-area-inset-bottom) + 166px)); }
+  .eva-bottom { bottom: max(175px, calc(env(safe-area-inset-bottom) + 162px)); }
+  .eva-objectives { max-width: 220px; }
+  .eva-objectives li { font-size: 13px; }
+  .eva-objectives li:not(.current) { display: none; }
+  .eva-flight { display: none; }
+  .eva-intro-controls .eva-mobile-help { display: block; }
+}
+@media (pointer: fine) { .eva-mobile-help { display: none; } }
+@media (max-width: 600px) {
+  .eva-intro { background: linear-gradient(90deg, #080e18e8, #080e188c); }
+  .eva-intro-content { left: max(24px, env(safe-area-inset-left)); width: calc(100% - 48px); top: 45%; }
+  .eva-intro h1 { font-size: clamp(70px, 20vw, 128px); }
+  .eva-intro h1 span { margin-top: 9px; }
+  .eva-intro-pitch { margin-top: 23px; max-width: 30ch; font-size: 19px; }
+  .eva-intro-bottom { left: 24px; right: 24px; bottom: max(20px, env(safe-area-inset-bottom)); }
+  .eva-intro-controls { max-width: 155px; font-size: 12px; }
+  .eva-caption { max-width: 130px; font-size: 12px; }
+  .eva-intro-actions .eva-button { min-width: 130px; font-size: 22px; padding: 12px 18px; }
+  .eva-hud { padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) 12px max(12px, env(safe-area-inset-left)); }
+  .eva-hud-top { gap: 8px; }
+  .eva-location { gap: 9px; margin-bottom: 8px; }
+  .eva-mode { font-size: 20px; }
+  .eva-zone { max-width: 110px; font-size: 13px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .eva-reserves { width: 240px; max-width: calc(100vw - 120px); padding: 8px; gap: 9px; }
+  .eva-gauge { width: calc((100% - 9px) / 2); }
+  .eva-gauge-top { font-size: 15px; }
+  .eva-gauge-track { margin-top: 5px; }
+  .eva-stock-strip { max-width: 240px; margin-top: 6px; padding-left: 8px; gap: 3px 10px; font-size: 11px; }
+  .eva-stock-strip b { font-size: 15px; }
+  .eva-hud-tools { gap: 6px; }
+  .eva-navigation { margin-top: 8px; font-size: 12px; }
+  .eva-focus { font-size: 15px; }
+  .eva-toast { top: 165px; padding: 9px 13px; font-size: 15px; }
+  .eva-bottom { left: 16px; right: 16px; }
+  .eva-objectives { max-width: 150px; }
+  .eva-interact { bottom: max(150px, calc(env(safe-area-inset-bottom) + 140px)); max-width: calc(100vw - 48px); font-size: 19px; }
+  .eva-menu { padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)); }
+  .eva-menu-sheet { max-height: calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); padding: 25px 23px; }
+  .eva-menu h2 { margin-bottom: 20px; }
+  .eva-menu h3 { margin-top: 22px; }
+  .eva-stick { width: 96px; height: 96px; left: max(18px, env(safe-area-inset-left)); bottom: max(22px, env(safe-area-inset-bottom)); }
+  .eva-touch-label { width: 96px; bottom: 105px; }
+  .eva-touch-buttons { right: max(16px, env(safe-area-inset-right)); bottom: max(22px, env(safe-area-inset-bottom)); }
+  .eva-touch-look-caption { bottom: max(150px, calc(env(safe-area-inset-bottom) + 142px)); }
+  .eva-bottom { bottom: auto; top: max(172px, calc(env(safe-area-inset-top) + 152px)); }
+  .eva-objectives { max-width: 240px; }
+}
+@media (max-height: 580px) and (orientation: landscape) {
+  .eva-intro-content { left: max(32px, env(safe-area-inset-left)); top: 43%; padding: 16px 0; width: 58%; }
+  .eva-intro h1 { font-size: clamp(72px, 13vw, 115px); }
+  .eva-intro h1 span { display: inline; margin-left: 15px; font-size: .64em; }
+  .eva-intro-pitch { margin: 16px 0; max-width: 38ch; font-size: 18px; }
+  .eva-intro-sound { margin-top: 5px; }
+  .eva-intro-bottom { left: max(32px, env(safe-area-inset-left)); bottom: max(14px, env(safe-area-inset-bottom)); }
+  .eva-intro-controls { font-size: 12px; }
+  .eva-loading { margin-top: 10px; }
+  .eva-hud { padding-top: max(12px, env(safe-area-inset-top)); }
+  .eva-reserves { gap: 10px; padding: 8px 10px; }
+  .eva-gauge { width: 68px; }
+  .eva-stock-strip { margin-top: 5px; }
+  .eva-location { margin-bottom: 7px; }
+  .eva-menu-sheet { padding: 23px 32px; }
+  .eva-menu h2 { font-size: 40px; margin-bottom: 18px; }
+  .eva-stick { width: 96px; height: 96px; bottom: max(14px, env(safe-area-inset-bottom)); }
+  .eva-touch-label { bottom: 104px; }
+  .eva-touch-buttons { bottom: max(14px, env(safe-area-inset-bottom)); }
+  .eva-interact { bottom: max(21px, env(safe-area-inset-bottom)); }
+  .eva-bottom { left: 145px; right: 145px; bottom: 20px; }
+  .eva-objectives { display: none; }
+  .eva-touch-look-caption { bottom: 136px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .eva-gauge-fill, .eva-loading-fill { transition: none; }
+}

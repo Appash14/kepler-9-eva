@@ -1,0 +1,13 @@
+node_modules
+dist
+.vercel
+captures/*
+!captures/eva-desktop.png
+!captures/habitat-desktop.png
+!captures/ship-desktop.png
+!captures/station-complete.png
+*.log
+.lourd.lock
+.env
+.env.*
+__pycache__/
